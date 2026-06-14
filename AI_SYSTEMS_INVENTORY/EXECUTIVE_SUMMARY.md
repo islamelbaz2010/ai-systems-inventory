@@ -79,7 +79,7 @@ inbox triage, CRM hygiene, and file organization running with minimal manual int
 
 ## 5. What To Ignore (Tier 4 / Skip)
 
-Per `installation_priority.xlsx`, 47 of 86 capabilities fall into Tier 4 (Skip for now).
+Per `installation_priority.xlsx`, 49 of 86 capabilities fall into Tier 4 (Skip for now).
 The most important Skip decisions:
 
 - **Duplicate document skills inside awesome-claude-skills** (docx/pdf/pptx/xlsx) - these
