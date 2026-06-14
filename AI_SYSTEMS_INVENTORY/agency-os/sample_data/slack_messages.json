@@ -1,0 +1,23 @@
+[
+  {
+    "id": "slack-001",
+    "channel": "#team",
+    "user": "jordan",
+    "text": "Did anyone follow up with the newcafe lead?",
+    "ts": "2026-06-14T07:45:00Z"
+  },
+  {
+    "id": "slack-002",
+    "channel": "#team",
+    "user": "morgan",
+    "text": "Heads up - Bright Dental mentioned to me on a call yesterday they're 'shopping around' for a new agency. Might be worth checking in with them directly.",
+    "ts": "2026-06-14T05:10:00Z"
+  },
+  {
+    "id": "slack-003",
+    "channel": "#team",
+    "user": "jordan",
+    "text": "Acme Retail design system files are in the shared drive if anyone needs the brand colors for the summer sale page.",
+    "ts": "2026-06-14T08:10:00Z"
+  }
+]

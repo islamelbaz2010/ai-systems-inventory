@@ -1,0 +1,42 @@
+{
+  "_comment": "Minimal JSON memory store for the Morning Brief POC. Represents the business-record portion of the Memory Layer (System 8) - known leads/clients, their status, and open items. claude-mem (installed and running on port 37700) separately persists Claude Code's own session/context memory; this file is the lightweight 'business record' memory the morning_brief.py script reads and updates each run, matching the data described in AGENCY_OS.md's Memory Layer.",
+  "clients": {
+    "acmeretail.com": {
+      "name": "Acme Retail",
+      "status": "active_client",
+      "design_system": "acme-retail-summer-2026",
+      "brand_colors": [
+        "#1F6F43",
+        "#FFD23F",
+        "#FFFFFF"
+      ],
+      "open_items": [],
+      "last_positive_contact": "2026-06-07"
+    },
+    "brightdental.com": {
+      "name": "Bright Dental",
+      "status": "active_client",
+      "design_system": "brightdental-clean-2025",
+      "brand_colors": [
+        "#2E86AB",
+        "#FFFFFF"
+      ],
+      "open_items": [
+        {
+          "item": "May blog posts not yet published",
+          "opened": "2026-06-07",
+          "sop_step": "Monthly Content SOP - Step 3 (publish)",
+          "status": "overdue"
+        }
+      ],
+      "last_positive_contact": "2026-05-20"
+    },
+    "vendorco.com": {
+      "name": "VendorCo",
+      "status": "vendor",
+      "note": "Not a client - billing/vendor domain, excluded from lead classification"
+    }
+  },
+  "leads": {},
+  "brief_history": []
+}

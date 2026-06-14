@@ -1,0 +1,38 @@
+[
+  {
+    "id": "gmail-001",
+    "from": "hello@newcafe.com",
+    "from_name": "New Cafe",
+    "subject": "Question about SEO for our website",
+    "body": "Hi, we run a small cafe (newcafe.com) and a friend said our website doesn't show up on Google. Could you help us figure out what's wrong? We're a 2-person team and don't really know where to start.",
+    "received_at": "2026-06-14T07:12:00Z",
+    "thread_id": "thread-newcafe-001"
+  },
+  {
+    "id": "gmail-002",
+    "from": "client@acmeretail.com",
+    "from_name": "Acme Retail",
+    "subject": "Quick landing page for summer sale",
+    "body": "Hey team, can you put together a quick landing page for our summer sale? We want to launch by Friday. Use our usual branding. Thanks!",
+    "received_at": "2026-06-14T08:03:00Z",
+    "thread_id": "thread-acme-summer-sale"
+  },
+  {
+    "id": "gmail-003",
+    "from": "billing@vendorco.com",
+    "from_name": "VendorCo Billing",
+    "subject": "Your invoice #4471 is ready",
+    "body": "This is an automated notice that invoice #4471 for $89.00 is now available in your VendorCo account.",
+    "received_at": "2026-06-14T03:45:00Z",
+    "thread_id": "thread-vendorco-4471"
+  },
+  {
+    "id": "gmail-004",
+    "from": "client@brightdental.com",
+    "from_name": "Bright Dental",
+    "subject": "Re: Monthly content - any update?",
+    "body": "Just following up - did the May blog posts go out? We haven't seen them on the site yet and a couple of patients mentioned the page feels outdated.",
+    "received_at": "2026-06-14T06:30:00Z",
+    "thread_id": "thread-brightdental-monthly"
+  }
+]
