@@ -108,54 +108,78 @@ against real (sample) data and a real persisted memory file. The only missing pi
 
 ## 4. What Still Requires Manual Setup
 
-| Step | Why it's manual | Owner action |
+| Step | Status | Detail |
 |---|---|---|
-| **Create Composio account + API key** | Composio is the gateway for both Gmail and Slack; requires the owner's own account | Sign up at platform.composio.dev (free tier), generate an API key |
-| **Set `COMPOSIO_API_KEY` env var** | Credential cannot be created or guessed by Claude | `export COMPOSIO_API_KEY="..."` in the shell/session that runs `morning_brief.py` |
-| **Connect Gmail via Composio OAuth** | Requires the owner to authorize access to their actual mailbox in a browser | Run Composio's Gmail connection flow once; approve the OAuth consent screen |
-| **Connect Slack via Composio OAuth** | Requires a Slack workspace admin to approve the Composio Slack app | Run Composio's Slack connection flow once; admin approves the app for the workspace |
-| **Implement `fetch_gmail_composio()` / `fetch_slack_composio()`** | Currently stubs that raise a clear "not connected yet" error - the actual Composio action calls (`GMAIL_FETCH_EMAILS`, `SLACK_FETCH_CONVERSATION_HISTORY` or similar) need to be wired in once the above credentials exist, since they cannot be tested without a live connection | Re-run with `--source composio` once connected; the script's classify/rank/report/memory logic does not need to change - only the two fetch functions |
-| **Schedule the daily run** | No scheduler exists in this container | On the owner's machine: cron job, launchd (macOS), or `npx claude-mem`'s companion-skill scheduling (per `FIRST_AUTOMATION.md` Option 2) to run `morning_brief.py` once per day and post the output to Slack |
-| **Post brief to Slack** | Same Composio Slack connection as above is reused for *sending* the brief, not just reading | Once Slack OAuth is connected, add a `SLACK_SEND_MESSAGE` call after `render_brief()` |
+| **Create Composio account + API key** | **DONE** | Owner created an account and provided an API key. Stored locally (not committed) in `agency-os/.env` (gitignored), `@composio/core` installed in `agency-os/node_modules`. |
+| **Connect Gmail via Composio OAuth** | **BLOCKED** | See blocker #1 below - cannot reach Composio's API from this container. |
+| **Connect Slack via Composio OAuth** | **BLOCKED** | Same blocker - the connection flow never gets far enough to print an OAuth URL. |
+| **Implement `fetch_gmail_composio()` / `fetch_slack_composio()`** | Not started | Blocked on the above - cannot test against a live connection until network access works. |
+| **Schedule the daily run** | Not started | On the owner's machine: cron job, launchd (macOS), or `npx claude-mem`'s companion-skill scheduling (per `FIRST_AUTOMATION.md` Option 2). |
+| **Post brief to Slack** | Not started | Add a `SLACK_SEND_MESSAGE` call after `render_brief()` once Slack is connected. |
 
 ---
 
 ## 5. Current Blockers
 
-1. **No `COMPOSIO_API_KEY`** - this is the single hard blocker preventing the Morning
-   Brief from running on real Gmail/Slack data instead of sample data. Everything
-   downstream (classification, memory, ranking, reporting) already works and does not
-   need to change once this is resolved.
-2. **No browser in this container** - cannot complete the Composio OAuth flows even if
-   an API key were provided here; these flows must be completed by the owner on their
-   own machine/browser.
-3. **No scheduler in this container** - the daily trigger must be set up on the owner's
-   machine (cron/launchd), not here.
+1. **HARD BLOCKER (new): This container's network egress allowlist blocks Composio's
+   API.** Running `node connect_composio.mjs gmail` with the real, valid
+   `COMPOSIO_API_KEY` fails immediately with:
+   ```
+   PermissionDeniedError: 403 Host not in allowlist: backend.composio.dev.
+   Add this host to your network egress settings to allow access.
+   ```
+   Confirmed independently with `curl`:
+   ```
+   curl -sI https://backend.composio.dev   -> HTTP/2 403, x-deny-reason: host_not_allowed
+   curl -sI https://platform.composio.dev  -> HTTP/2 403, x-deny-reason: host_not_allowed
+   ```
+   This is enforced by this remote execution environment's egress gateway
+   (`/etc/ssl/certs/egress-gateway-ca-*.pem`), not by Composio or by the code in this
+   repo. **This is the only remaining blocker for Gmail/Slack OAuth.**
 
-None of these blockers affect the **architecture or code** of the Morning Brief - they
-are credential/owner-action items only.
+   **Fix (owner action, outside this session):** In the environment's settings (Claude
+   Code on the web → this environment's network/egress configuration), add
+   `backend.composio.dev` (and likely `platform.composio.dev`, `api.composio.dev`,
+   `*.composio.dev`) to the allowed-domains list, or run the connection step on a
+   machine without an egress allowlist (e.g., locally). Once `connect_composio.mjs
+   gmail` / `... slack` can reach `backend.composio.dev`, the OAuth URL + approval flow
+   described in section 6 proceeds as planned - no code changes needed.
+
+2. **No browser in this container** - even once network access is fixed, the printed
+   OAuth URL must be opened by the owner in their own browser to approve Gmail/Slack
+   access.
+3. **No scheduler in this container** - the daily trigger must be set up on the owner's
+   machine (cron/launchd).
+
+Steps 1-3 (account creation, classification logic, memory, sample-data Morning Brief)
+are all done and working. The remaining work is entirely gated on the network-allowlist
+fix above.
 
 ---
 
 ## 6. Exact Next Steps (in order)
 
-1. Owner creates a Composio account and API key at platform.composio.dev.
-2. Owner runs `export COMPOSIO_API_KEY="..."` (and persists it in their shell profile or
-   `.env`).
-3. Owner completes the Gmail OAuth connection via Composio (one-time, browser).
-4. Owner completes the Slack OAuth connection via Composio (one-time, browser, workspace
-   admin approval).
-5. Implement `fetch_gmail_composio()` and `fetch_slack_composio()` in
+1. ~~Owner creates a Composio account and API key at platform.composio.dev.~~ **DONE.**
+2. ~~Set `COMPOSIO_API_KEY`.~~ **DONE** (stored in `agency-os/.env`, gitignored).
+3. **(BLOCKED - do this next)** Fix the network egress allowlist for this environment to
+   permit `backend.composio.dev` (and `*.composio.dev`) - see Blocker #1 in section 5.
+   Without this, step 4 cannot even print an OAuth URL.
+4. Run `node connect_composio.mjs gmail` from `agency-os/` - opens a Google OAuth URL;
+   owner approves in their browser; script saves the connection to
+   `agency-os/memory/connections.json`.
+5. Run `node connect_composio.mjs slack` - same flow for Slack (workspace admin
+   approves).
+6. Implement `fetch_gmail_composio()` and `fetch_slack_composio()` in
    `agency-os/morning_brief.py` using the now-available Composio connection (replace the
    two `NotImplementedError` stubs with real `GMAIL_FETCH_EMAILS` /
    `SLACK_FETCH_CONVERSATION_HISTORY`-equivalent calls).
-6. Run `python3 morning_brief.py --source composio` once to confirm real data flows
+7. Run `python3 morning_brief.py --source composio` once to confirm real data flows
    through the same classify/memory/rank/report pipeline already verified with sample
    data.
-7. Add a `SLACK_SEND_MESSAGE` call at the end of `render_brief()` to post the brief to
+8. Add a `SLACK_SEND_MESSAGE` call at the end of `render_brief()` to post the brief to
    `#team` instead of (or in addition to) printing it.
-8. Set up a daily cron/launchd job (or claude-mem companion-skill schedule, per
-   `FIRST_AUTOMATION.md` Option 2) to run step 6-7 every morning.
+9. Set up a daily cron/launchd job (or claude-mem companion-skill schedule, per
+   `FIRST_AUTOMATION.md` Option 2) to run steps 7-8 every morning.
 
 ---
 
