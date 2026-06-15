@@ -10,7 +10,7 @@ Morning Brief.
 Data source modes:
   - "sample" (default): reads sample_data/gmail_inbox.json and sample_data/slack_messages.json
   - "composio": fetches live Gmail/Slack data via Composio (requires COMPOSIO_API_KEY env var
-    and completed Gmail/Slack OAuth connections - see IMPLEMENTATION_STATUS.md)
+    and completed Gmail/Slack OAuth connections - see LOCAL_DEPLOYMENT_GUIDE.md)
 
 Usage:
   python3 morning_brief.py [--source sample|composio]
@@ -19,6 +19,7 @@ Usage:
 import argparse
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,34 +52,32 @@ def fetch_slack_sample():
     return load_json(SLACK_SAMPLE_PATH)
 
 
-def fetch_gmail_composio():
-    """Fetch unread Gmail from the last 24h via Composio's GMAIL_FETCH_EMAILS action."""
+def _run_node_fetcher(script_name, extra_args=None):
+    """Run one of the fetch_*.mjs helpers (Node + @composio/core) and parse its JSON stdout."""
     api_key = os.environ.get("COMPOSIO_API_KEY")
     if not api_key:
         raise RuntimeError(
             "COMPOSIO_API_KEY is not set. Run with --source sample, or follow "
-            "IMPLEMENTATION_STATUS.md to connect Gmail via Composio."
+            "LOCAL_DEPLOYMENT_GUIDE.md to set up Composio + Gmail/Slack."
         )
-    from composio import Composio  # noqa: F401  (imported lazily; requires @composio/core or composio python pkg)
+    cmd = ["node", str(BASE_DIR / script_name)] + (extra_args or [])
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=BASE_DIR)
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"{script_name} failed:\n{result.stderr.strip()}\n\n"
+            "See LOCAL_DEPLOYMENT_GUIDE.md for setup/troubleshooting."
+        )
+    return json.loads(result.stdout)
 
-    raise NotImplementedError(
-        "Composio Gmail connection has not been completed in this environment "
-        "(COMPOSIO_API_KEY present, but no Gmail account is connected). "
-        "See IMPLEMENTATION_STATUS.md for the exact remaining steps."
-    )
+
+def fetch_gmail_composio():
+    """Fetch unread Gmail from the last 24h via Composio (fetch_gmail.mjs)."""
+    return _run_node_fetcher("fetch_gmail.mjs")
 
 
 def fetch_slack_composio():
-    api_key = os.environ.get("COMPOSIO_API_KEY")
-    if not api_key:
-        raise RuntimeError(
-            "COMPOSIO_API_KEY is not set. Run with --source sample, or follow "
-            "IMPLEMENTATION_STATUS.md to connect Slack via Composio."
-        )
-    raise NotImplementedError(
-        "Composio Slack connection has not been completed in this environment. "
-        "See IMPLEMENTATION_STATUS.md for the exact remaining steps."
-    )
+    """Fetch recent #team Slack messages via Composio (fetch_slack.mjs)."""
+    return _run_node_fetcher("fetch_slack.mjs")
 
 
 def classify_email(email, memory):
