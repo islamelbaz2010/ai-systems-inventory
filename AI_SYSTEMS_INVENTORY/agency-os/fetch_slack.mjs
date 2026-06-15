@@ -46,7 +46,12 @@ async function main() {
     throw new Error('Slack is not connected. Run "node connect_composio.mjs slack" first.');
   }
 
-  const composio = new Composio({ apiKey });
+  const composio = new Composio({
+  apiKey,
+  toolkitVersions: {
+    slack: '20250902_00'
+  }
+});
   const connectedAccountId = connections.slack.connectedAccountId;
 
   // 1. Resolve channel name -> channel ID

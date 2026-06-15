@@ -59,7 +59,8 @@ async function main() {
   console.log(`Auth config created: ${authConfig.id}`);
 
   console.log(`Initiating connection for "${toolkit}" (user: ${USER_ID})...`);
-  const connectionRequest = await composio.connectedAccounts.initiate(USER_ID, authConfig.id);
+  const connectionRequest = await composio.connectedAccounts.link(USER_ID, 
+authConfig.id);
 
   console.log('');
   console.log('=========================================================');
