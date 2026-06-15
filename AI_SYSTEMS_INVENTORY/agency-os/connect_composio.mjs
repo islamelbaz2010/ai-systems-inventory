@@ -42,7 +42,7 @@ async function main() {
   const toolkit = process.argv[2];
 
   if (toolkit === 'status') {
-    const accounts = await composio.connectedAccounts.list({ userId: USER_ID });
+    const accounts = await composio.connectedAccounts.list({ userIds: [USER_ID] });
     console.log(JSON.stringify(accounts, null, 2));
     return;
   }
@@ -59,8 +59,7 @@ async function main() {
   console.log(`Auth config created: ${authConfig.id}`);
 
   console.log(`Initiating connection for "${toolkit}" (user: ${USER_ID})...`);
-  const connectionRequest = await composio.connectedAccounts.link(USER_ID, 
-authConfig.id);
+  const connectionRequest = await composio.connectedAccounts.link(USER_ID, authConfig.id);
 
   console.log('');
   console.log('=========================================================');
