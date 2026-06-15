@@ -1,0 +1,87 @@
+[
+  {
+    "id": "post_001",
+    "status": "published",
+    "client": "Acme Retail",
+    "channels": ["acc_ig_acme", "acc_li_acme"],
+    "type": "post",
+    "content": "Summer Sale starts now! Up to 40% off storewide — link in bio.",
+    "published_at": "2026-06-13T09:00:00Z",
+    "analytics": {
+      "impressions": 8400,
+      "engagements": 620,
+      "likes": 540,
+      "comments": 38,
+      "shares": 42
+    }
+  },
+  {
+    "id": "post_002",
+    "status": "published",
+    "client": "Bright Dental",
+    "channels": ["acc_fb_brightdental"],
+    "type": "post",
+    "content": "Meet our new hygienist team! We're excited to welcome two new faces to the practice.",
+    "published_at": "2026-06-12T14:00:00Z",
+    "analytics": {
+      "impressions": 2100,
+      "engagements": 95,
+      "likes": 80,
+      "comments": 10,
+      "shares": 5
+    }
+  },
+  {
+    "id": "post_003",
+    "status": "scheduled",
+    "client": "New Cafe",
+    "channels": ["acc_tiktok_newcafe"],
+    "type": "reel",
+    "content": "Behind the scenes: our new cold brew, from bean to cup.",
+    "scheduled_at": "2026-06-16T13:00:00Z"
+  },
+  {
+    "id": "post_004",
+    "status": "scheduled",
+    "client": "Acme Retail",
+    "channels": ["acc_ig_acme"],
+    "type": "post",
+    "content": "Last 3 days of our Summer Sale — don't miss out!",
+    "scheduled_at": "2026-06-14T09:00:00Z"
+  },
+  {
+    "id": "post_005",
+    "status": "failed",
+    "client": "Bright Dental",
+    "channels": ["acc_ig_brightdental"],
+    "type": "post",
+    "content": "May blog roundup carousel",
+    "created_at": "2026-06-10T10:00:00Z",
+    "error": "validation_error: Instagram posts require at least one image or video"
+  },
+  {
+    "id": "post_006",
+    "status": "published",
+    "client": "New Cafe",
+    "channels": ["acc_tiktok_newcafe"],
+    "type": "reel",
+    "content": "Our barista's latte art compilation — round 3!",
+    "published_at": "2026-06-11T16:00:00Z",
+    "analytics": {
+      "impressions": 15200,
+      "engagements": 1840,
+      "likes": 1700,
+      "comments": 90,
+      "shares": 50
+    }
+  },
+  {
+    "id": "post_007",
+    "status": "draft",
+    "client": "Acme Retail",
+    "channels": ["acc_li_acme"],
+    "type": "post",
+    "content": "Draft: Q3 hiring announcement — awaiting client sign-off before scheduling.",
+    "created_at": "2026-06-09T11:00:00Z"
+  }
+]

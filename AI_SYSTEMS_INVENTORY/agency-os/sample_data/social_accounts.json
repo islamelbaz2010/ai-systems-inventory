@@ -1,0 +1,42 @@
+[
+  {
+    "id": "acc_ig_acme",
+    "platform": "instagram",
+    "username": "@acmeretail",
+    "client": "Acme Retail",
+    "status": "connected",
+    "content_types": ["post", "story", "reel"]
+  },
+  {
+    "id": "acc_li_acme",
+    "platform": "linkedin",
+    "username": "Acme Retail",
+    "client": "Acme Retail",
+    "status": "connected",
+    "content_types": ["post"]
+  },
+  {
+    "id": "acc_fb_brightdental",
+    "platform": "facebook",
+    "username": "Bright Dental",
+    "client": "Bright Dental",
+    "status": "connected",
+    "content_types": ["post", "story", "reel"]
+  },
+  {
+    "id": "acc_ig_brightdental",
+    "platform": "instagram",
+    "username": "@brightdental",
+    "client": "Bright Dental",
+    "status": "connected",
+    "content_types": ["post", "story", "reel"]
+  },
+  {
+    "id": "acc_tiktok_newcafe",
+    "platform": "tiktok",
+    "username": "@newcafe",
+    "client": "New Cafe",
+    "status": "connected",
+    "content_types": ["post", "reel"]
+  }
+]

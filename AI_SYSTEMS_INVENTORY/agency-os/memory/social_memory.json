@@ -1,0 +1,4 @@
+{
+  "_comment": "Social Media Operations Layer KPI memory. Separate from memory_store.json (Communication Layer business records) and claude-mem (session memory). Holds brief_history snapshots written by social_brief.py for month-over-month KPI tracking.",
+  "brief_history": []
+}
